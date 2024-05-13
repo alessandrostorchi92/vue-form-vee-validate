@@ -1,6 +1,13 @@
 <script>
 
+import { Form, Field } from 'vee-validate';
+
 export default {
+
+    components: {
+        Form,
+        Field,
+    },
 
     data() {
 
@@ -17,6 +24,34 @@ export default {
 
         };
 
+    },
+
+    methods: {
+
+        onSubmit(values) {
+            console.log(values);
+        },
+
+        validateEmail(value) {
+
+            // if the field is null, undefined, o ""
+            if (!value) {
+                return "This field is required";
+            };
+
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            // if the field is not a valid email
+            if (!emailPattern.test(value)) {
+
+                return "You entered an invalid email"
+
+            };
+
+            return true;
+
+        },
+
     }
 
 }
@@ -26,7 +61,7 @@ export default {
 
 <template>
 
-    <form>
+    <Form @submit="onSubmit">
 
         <div class="container">
 
@@ -35,32 +70,32 @@ export default {
                 <div class="mb-3">
 
                     <label for="name" class="form-label">Name</label>
-                    <input id="name" class="form-control" type="text" name="name" placeholder="Enter your name"
-                        v-model="form.name">
+                    <Field id="name" class="form-control" type="text" name="name" placeholder="Enter your name"
+                        v-model="form.name"></Field>
 
                 </div>
 
                 <div class="mb-3">
 
-                    <label for="surnmame" class="form-label">Surname</label>
-                    <input id="surname" class="form-control" type="text" name="surname" placeholder="Enter your surname"
-                        v-model="form.surname">
+                    <label for="surname" class="form-label">Name</label>
+                    <Field id="surname" class="form-control" type="text" name="surname" placeholder="Enter your surname"
+                        v-model="form.surname"></Field>
 
                 </div>
 
                 <div class="mb-3">
 
                     <label for="email" class="form-label">Email</label>
-                    <input id="email" class="form-control" type="email" name="email" placeholder="Enter your email"
-                        v-model="form.email">
+                    <Field id="email" class="form-control" type="email" name="email" placeholder="Enter your email"
+                        v-model="form.email" :rules="validateEmail"></Field>
 
                 </div>
 
                 <div class="mb-3">
 
                     <label for="password" class="form-label">Password</label>
-                    <input id="password" class="form-control" type="password" name="password"
-                        placeholder="Enter your password" v-model="form.password">
+                    <Field id="password" class="form-control" type="password" name="password"
+                        placeholder="Enter your password" v-model="form.password"></Field>
 
                 </div>
 
@@ -72,8 +107,7 @@ export default {
 
         </div>
 
-    </form>
-
+    </Form>
 
 </template>
 
