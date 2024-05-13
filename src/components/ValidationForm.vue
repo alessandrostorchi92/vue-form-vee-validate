@@ -28,19 +28,49 @@ export default {
 
     <form>
 
-        <label for="name">Name</label>
-        <input id="name" type="text" name="name" v-model="form.name">
+        <div class="container">
 
-        <label for="surnmame">Surname</label>
-        <input id="surname" type="text" name="surname" v-model="form.surname">
+            <div class="row justify-content-center mt-5">
 
-        <label for="email">Email</label>
-        <input id="email" type="email" name="email" v-model="form.email">
+                <div class="mb-3">
 
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" v-model="form.password">
+                    <label for="name" class="form-label">Name</label>
+                    <input id="name" class="form-control" type="text" name="name" placeholder="Enter your name"
+                        v-model="form.name">
 
-        <button>Submit</button>
+                </div>
+
+                <div class="mb-3">
+
+                    <label for="surnmame" class="form-label">Surname</label>
+                    <input id="surname" class="form-control" type="text" name="surname" placeholder="Enter your surname"
+                        v-model="form.surname">
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label for="email" class="form-label">Email</label>
+                    <input id="email" class="form-control" type="email" name="email" placeholder="Enter your email"
+                        v-model="form.email">
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label for="password" class="form-label">Password</label>
+                    <input id="password" class="form-control" type="password" name="password"
+                        placeholder="Enter your password" v-model="form.password">
+
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+            </div>
+
+        </div>
 
     </form>
 
