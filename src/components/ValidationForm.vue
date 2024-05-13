@@ -7,8 +7,12 @@ export default {
         return {
 
             form: {
+
+                name: "",
+                surname: "",
                 email: "",
                 password: ""
+
             },
 
         };
@@ -22,23 +26,26 @@ export default {
 
 <template>
 
-<form>
+    <form>
 
-    <label for="email">Email</label>
-    <input id="email" type="email" v-model="form.email">
+        <label for="name">Name</label>
+        <input id="name" type="text" name="name" v-model="form.name">
 
-    <label for="password">Password</label>
-    <input id="password" type="password" v-model="form.password">
+        <label for="surnmame">Surname</label>
+        <input id="surname" type="text" name="surname" v-model="form.surname">
 
-    <button>Submit</button>
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" v-model="form.email">
 
-</form>
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" v-model="form.password">
+
+        <button>Submit</button>
+
+    </form>
 
 
 </template>
 
 
-<style lang="scss" scoped>
-
-
-</style>
+<style lang="scss" scoped></style>
