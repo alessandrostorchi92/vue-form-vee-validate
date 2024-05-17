@@ -1,12 +1,16 @@
 <script>
 
-import { Form, Field } from 'vee-validate';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import * as yup from 'yup';
 
 export default {
 
     components: {
+
         Form,
         Field,
+        ErrorMessage
+
     },
 
     data() {
@@ -22,46 +26,93 @@ export default {
 
             },
 
+            formSchema: {
+
+                name: yup.string().trim().required("Sorry, the name is required"),
+                surname: yup.string().trim().required("Sorry, the surname is required"),
+                email: yup.string().required("Sorry, the email is required").email("Sorry, the email is not valid").trim(),
+                password: yup.string().trim()
+                    .required("Sorry, the password is required")
+                    .min(8, "Password must be at least 8 characters long")
+                    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/, "Your password must contain at least one lowercase letter, one uppercase letter, one number, and one special character")
+
+            },
+
+            submittedUsers: [],
+
         };
 
     },
 
     methods: {
 
-        onSubmit(values) {
+        onSubmit(values, { resetForm }) {
+
+            console.info("The submission was successful");
+
+            this.fetchUserData(values);
+
+            resetForm();
+
+        },
+
+        onInvalidSubmit({ values, errors, results }) {
+
+            console.error("The submission was unsuccessful");
+
             console.log(values);
-        },
-
-        validateEmail(value) {
-
-            // if the field is null, undefined, o ""
-            if (!value) {
-                return "This field is required";
-            };
-
-            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-            // if the field is not a valid email
-            if (!emailPattern.test(value)) {
-
-                return "You entered an invalid email"
-
-            };
-
-            return true;
+            console.log(errors);
+            console.log(results);
 
         },
 
-    }
+        visualValidationInput(meta) {
+
+            return {
+
+                // L'errore da risolvere è qui
+
+                'is-valid': !meta.valid && meta.touched && meta.dirty,
+                'is-invalid': meta.valid && meta.touched && meta.dirty,
+
+            };
+
+        },
+
+        fetchUserData(userData) {
+
+            const userDataJSON = JSON.stringify(userData);
+            localStorage.setItem(userData, userDataJSON);
+            console.log(localStorage);
+
+            const storedData = localStorage.getItem(userData);
+
+            if (storedData) {
+
+                const fetchStoredUserData = JSON.parse(storedData);
+                console.log(fetchStoredUserData);
+                console.log(typeof fetchStoredUserData);
+
+                if (fetchStoredUserData) {
+
+                    this.submittedUsers.push(fetchStoredUserData);
+                    console.log(this.submittedUsers);
+
+                }
+
+            }
+
+        },
+
+    },
 
 }
 
 </script>
 
-
 <template>
 
-    <Form @submit="onSubmit">
+    <Form @submit="onSubmit" :validation-schema="formSchema" @invalid-submit="onInvalidSubmit" v-slot="{ meta }">
 
         <div class="container">
 
@@ -70,37 +121,46 @@ export default {
                 <div class="mb-3">
 
                     <label for="name" class="form-label">Name</label>
-                    <Field id="name" class="form-control" type="text" name="name" placeholder="Enter your name"
-                        v-model="form.name"></Field>
+                    <Field id="name" class="form-control" :class="visualValidationInput(meta)" type="text" name="name"
+                        placeholder="Enter your name" v-model="form.name"></Field>
+                    <ErrorMessage name="name" class="text-danger fst-italic small-text">
+                    </ErrorMessage>
 
                 </div>
 
                 <div class="mb-3">
 
-                    <label for="surname" class="form-label">Name</label>
-                    <Field id="surname" class="form-control" type="text" name="surname" placeholder="Enter your surname"
-                        v-model="form.surname"></Field>
+                    <label for="surname" class="form-label">Surname</label>
+                    <Field id="surname" class="form-control" :class="visualValidationInput(meta)" type="text"
+                        name="surname" placeholder="Enter your surname" v-model="form.surname"></Field>
+                    <ErrorMessage name="surname" class="text-danger fst-italic small-text">
+                    </ErrorMessage>
+
 
                 </div>
 
                 <div class="mb-3">
 
                     <label for="email" class="form-label">Email</label>
-                    <Field id="email" class="form-control" type="email" name="email" placeholder="Enter your email"
-                        v-model="form.email" :rules="validateEmail"></Field>
+                    <Field id="email" class="form-control" :class="visualValidationInput(meta)" type="email"
+                        name="email" placeholder="Enter your email" v-model="form.email"></Field>
+                    <ErrorMessage name="email" class="text-danger fst-italic small-text">
+                    </ErrorMessage>
 
                 </div>
 
                 <div class="mb-3">
 
                     <label for="password" class="form-label">Password</label>
-                    <Field id="password" class="form-control" type="password" name="password"
-                        placeholder="Enter your password" v-model="form.password"></Field>
+                    <Field id="password" class="form-control" :class="visualValidationInput(meta)" type="password"
+                        name="password" placeholder="Enter your password" v-model="form.password"></Field>
+                    <ErrorMessage name="password" class="text-danger fst-italic small-text">
+                    </ErrorMessage>
 
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button :disabled="!meta.valid" type="submit" class="btn btn-primary">Submit</button>
                 </div>
 
             </div>
@@ -109,7 +169,12 @@ export default {
 
     </Form>
 
+
 </template>
 
+<style lang="scss" scoped>
+.small-text {
 
-<style lang="scss" scoped></style>
+    font-size: 0.8rem;
+}
+</style>
