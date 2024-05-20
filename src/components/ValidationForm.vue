@@ -1,7 +1,11 @@
 <script>
 
-import { Form, Field, ErrorMessage } from 'vee-validate';
+import { Form, Field, ErrorMessage, configure } from 'vee-validate';
 import * as yup from 'yup';
+
+configure({
+    validateOnChange: true,
+});
 
 export default {
 
@@ -34,7 +38,7 @@ export default {
                 password: yup.string().trim()
                     .required("Sorry, the password is required")
                     .min(8, "Password must be at least 8 characters long")
-                    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/, "Your password must contain at least one lowercase letter, one uppercase letter, one number, and one special character")
+                    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_\-])[A-Za-z\d@$!%*?&_\-]+$/, "Your password must contain at least one lowercase letter, one uppercase letter, one number, and one special character")
 
             },
 
@@ -70,10 +74,8 @@ export default {
 
             return {
 
-                // L'errore da risolvere è qui
-
-                'is-valid': !meta.valid && meta.touched && meta.dirty,
-                'is-invalid': meta.valid && meta.touched && meta.dirty,
+                'is-valid': meta.valid && meta.touched,
+                'is-invalid': !meta.valid && meta.touched
 
             };
 
@@ -121,8 +123,10 @@ export default {
                 <div class="mb-3">
 
                     <label for="name" class="form-label">Name</label>
-                    <Field id="name" class="form-control" :class="visualValidationInput(meta)" type="text" name="name"
-                        placeholder="Enter your name" v-model="form.name"></Field>
+                    <Field id="name" name="name" v-slot="{ field, meta }">
+                        <input type="text" class="form-control" v-bind="field" v-model="form.name"
+                            :class="visualValidationInput(meta)" placeholder="Enter your surname" />
+                    </Field>
                     <ErrorMessage name="name" class="text-danger fst-italic small-text">
                     </ErrorMessage>
 
@@ -131,8 +135,10 @@ export default {
                 <div class="mb-3">
 
                     <label for="surname" class="form-label">Surname</label>
-                    <Field id="surname" class="form-control" :class="visualValidationInput(meta)" type="text"
-                        name="surname" placeholder="Enter your surname" v-model="form.surname"></Field>
+                    <Field id="surname" name="surname" v-slot="{ field, meta }">
+                        <input type="text" class="form-control" v-bind="field" v-model="form.surname"
+                            :class="visualValidationInput(meta)" placeholder="Enter your surname" />
+                    </Field>
                     <ErrorMessage name="surname" class="text-danger fst-italic small-text">
                     </ErrorMessage>
 
@@ -142,8 +148,10 @@ export default {
                 <div class="mb-3">
 
                     <label for="email" class="form-label">Email</label>
-                    <Field id="email" class="form-control" :class="visualValidationInput(meta)" type="email"
-                        name="email" placeholder="Enter your email" v-model="form.email"></Field>
+                    <Field id="email" name="email" v-slot="{ field, meta }">
+                        <input type="email" class="form-control" v-bind="field" v-model="form.email"
+                            :class="visualValidationInput(meta)" placeholder="Enter your email" />
+                    </Field>
                     <ErrorMessage name="email" class="text-danger fst-italic small-text">
                     </ErrorMessage>
 
@@ -152,15 +160,19 @@ export default {
                 <div class="mb-3">
 
                     <label for="password" class="form-label">Password</label>
-                    <Field id="password" class="form-control" :class="visualValidationInput(meta)" type="password"
-                        name="password" placeholder="Enter your password" v-model="form.password"></Field>
+                    <Field id="password" name="password" v-slot="{ field, meta }">
+                        <input type="password" class="form-control" v-bind="field" v-model="form.password"
+                            :class="visualValidationInput(meta)" placeholder="Enter your password" />
+                    </Field>
                     <ErrorMessage name="password" class="text-danger fst-italic small-text">
                     </ErrorMessage>
 
                 </div>
 
                 <div class="text-center">
+
                     <button :disabled="!meta.valid" type="submit" class="btn btn-primary">Submit</button>
+
                 </div>
 
             </div>
