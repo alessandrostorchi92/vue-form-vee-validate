@@ -84,16 +84,20 @@ export default {
         fetchUserData(userData) {
 
             const userDataJSON = JSON.stringify(userData);
-            localStorage.setItem(userData, userDataJSON);
+
+            // Ciò garantisce che ogni utente venga memorizzato con una chiave unica e impedisce che i dati vengano sovrascritti ogni volta
+
+            const uniqueKey = `user_${Date.now()}`;
+
+            localStorage.setItem(uniqueKey, userDataJSON);
             console.log(localStorage);
 
-            const storedData = localStorage.getItem(userData);
+            const storedData = localStorage.getItem(uniqueKey);
 
             if (storedData) {
 
                 const fetchStoredUserData = JSON.parse(storedData);
-                console.log(fetchStoredUserData);
-                console.log(typeof fetchStoredUserData);
+                // console.log(fetchStoredUserData);
 
                 if (fetchStoredUserData) {
 
